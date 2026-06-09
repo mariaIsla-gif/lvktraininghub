@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LVK Team Training Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green: #1D9E75;
+    --green-dark: #0F6E56;
+    --green-deeper: #085041;
+    --green-bg: #E1F5EE;
+    --green-bg2: #9FE1CB;
+    --amber: #EF9F27;
+    --amber-bg: #FAEEDA;
+    --amber-text: #854F0B;
+    --text: #1a1a18;
+    --text-2: #5a5a56;
+    --text-3: #8a8a84;
+    --border: rgba(0,0,0,0.1);
+    --border-2: rgba(0,0,0,0.18);
+    --surface: #fff;
+    --surface-2: #f6f6f2;
+    --surface-3: #f0f0ea;
+    --radius: 10px;
+    --radius-lg: 14px;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--surface-2);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* Top bar */
+  .topbar {
+    background: var(--surface);
+    border-bottom: 0.5px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .topbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .brand-dot {
+    width: 28px; height: 28px;
+    background: var(--green);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .brand-dot svg { width: 14px; height: 14px; }
+  .brand-name { font-size: 15px; font-weight: 600; letter-spacing: -0.02em; }
+  .topbar-meta { font-size: 12px; color: var(--text-3); font-family: 'DM Mono', monospace; }
+
+  /* Layout */
+  .layout {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  /* Page header */
+  .page-header {
+    margin-bottom: 2rem;
+  }
+  .page-header h1 {
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .page-header p {
+    font-size: 14px;
+    color: var(--text-2);
+  }
+
+  /* Stats row */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 1.5rem;
+  }
+  .stat {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 14px 16px;
+  }
+  .stat-num {
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+  }
+  .stat-num.green { color: var(--green); }
+  .stat-label {
+    font-size: 12px;
+    color: var(--text-3);
+    margin-top: 2px;
+  }
+
+  /* Progress */
+  .progress-wrap {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 16px 20px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .progress-bar-bg {
+    flex: 1;
+    height: 6px;
+    background: var(--surface-3);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--green);
+    border-radius: 99px;
+    transition: width 0.4s ease;
+  }
+  .progress-text {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-2);
+    white-space: nowrap;
+    font-family: 'DM Mono', monospace;
+    min-width: 80px;
+    text-align: right;
+  }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 1.5rem;
+    background: var(--surface-3);
+    border-radius: var(--radius);
+    padding: 3px;
+    width: fit-content;
+  }
+  .tab {
+    padding: 7px 18px;
+    border-radius: 8px;
+    border: none;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    background: transparent;
+    color: var(--text-2);
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.15s;
+  }
+  .tab.active {
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .tab:hover:not(.active) { color: var(--text); }
+
+  /* Section labels */
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin-bottom: 8px;
+    margin-top: 1.25rem;
+    font-family: 'DM Mono', monospace;
+  }
+  .section-label:first-child { margin-top: 0; }
+
+  /* Article cards */
+  .articles-list { display: flex; flex-direction: column; gap: 6px; }
+  .article-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    transition: border-color 0.15s, background 0.15s;
+    width: 100%;
+    text-align: left;
+  }
+  .article-card:hover { border-color: var(--border-2); }
+  .article-card.read {
+    background: #f0faf6;
+    border-color: #9FE1CB;
+  }
+  .check-circle {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border-2);
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+    cursor: pointer;
+    background: transparent;
+    padding: 0;
+  }
+  .article-card.read .check-circle {
+    background: var(--green);
+    border-color: var(--green);
+  }
+  .check-circle svg { display: none; }
+  .article-card.read .check-circle svg { display: block; }
+  .ask-btn {
+    flex-shrink: 0;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--green-dark);
+    background: var(--green-bg);
+    border: 0.5px solid #9FE1CB;
+    border-radius: 99px;
+    padding: 3px 10px;
+    text-decoration: none;
+    transition: background 0.15s;
+    white-space: nowrap;
+  }
+  .ask-btn:hover { background: #9FE1CB; }
+  .article-num {
+    font-size: 11px;
+    color: var(--text-3);
+    font-family: 'DM Mono', monospace;
+    min-width: 22px;
+    flex-shrink: 0;
+  }
+  .article-card.read .article-num { color: var(--green-dark); }
+  .article-title { font-size: 14px; color: var(--text); flex: 1; }
+  .article-link { text-decoration: none; }
+  .article-link:hover { text-decoration: underline; color: var(--green-dark); }
+  .article-card.read .article-title { color: var(--green-deeper); }
+  .updated-pill {
+    font-size: 11px;
+    font-weight: 500;
+    background: var(--amber-bg);
+    color: var(--amber-text);
+    padding: 2px 9px;
+    border-radius: 99px;
+    flex-shrink: 0;
+  }
+
+  /* Ask form */
+  .ask-card {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+  }
+  .ask-card h2 {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    letter-spacing: -0.02em;
+  }
+  .ask-card .subtitle {
+    font-size: 13px;
+    color: var(--text-2);
+    margin-bottom: 1.25rem;
+  }
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-2);
+    margin-bottom: 6px;
+    letter-spacing: 0.02em;
+  }
+  select, textarea {
+    width: 100%;
+    padding: 9px 12px;
+    border-radius: var(--radius);
+    border: 0.5px solid var(--border-2);
+    background: var(--surface-2);
+    font-size: 14px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    margin-bottom: 1rem;
+    transition: border-color 0.15s;
+  }
+  select:focus, textarea:focus { border-color: var(--green); }
+  textarea { min-height: 90px; resize: vertical; }
+  .btn {
+    padding: 9px 20px;
+    border-radius: var(--radius);
+    border: 0.5px solid var(--border-2);
+    background: var(--surface);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.15s;
+  }
+  .btn:hover { background: var(--surface-3); }
+  .btn-green {
+    background: var(--green);
+    color: #fff;
+    border-color: var(--green-dark);
+  }
+  .btn-green:hover { background: var(--green-dark); }
+  .submit-msg {
+    font-size: 13px;
+    color: var(--green);
+    font-weight: 500;
+    margin-left: 12px;
+    display: none;
+  }
+
+  /* Questions tab */
+  .questions-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  .questions-header span {
+    font-size: 13px;
+    color: var(--text-2);
+    font-family: 'DM Mono', monospace;
+  }
+  .q-card {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    margin-bottom: 8px;
+  }
+  .q-topic-pill {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 500;
+    background: var(--green-bg);
+    color: var(--green-dark);
+    padding: 2px 9px;
+    border-radius: 99px;
+    margin-bottom: 7px;
+  }
+  .q-text { font-size: 14px; color: var(--text); line-height: 1.5; }
+  .q-num { font-size: 11px; color: var(--text-3); margin-top: 5px; font-family: 'DM Mono', monospace; }
+  .empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-3);
+    font-size: 14px;
+  }
+
+  @media (max-width: 600px) {
+    .stats { grid-template-columns: repeat(3, 1fr); }
+    .topbar { padding: 0 1rem; }
+    .layout { padding: 1.25rem 1rem 3rem; }
+    .tabs { width: 100%; }
+    .tab { flex: 1; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="brand-dot">
+      <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 7h10M7 2l5 5-5 5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <span class="brand-name">LVK Training Hub</span>
+  </div>
+  <span class="topbar-meta" id="topbarDate"></span>
+</div>
+
+<div class="layout">
+  <div class="page-header">
+    <h1>Team Training Prep</h1>
+    <p>Read the 56 articles below, mark them as done, and submit your questions for the training session.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-num green" id="statRead">0</div>
+      <div class="stat-label">Articles read</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">56</div>
+      <div class="stat-label">Total articles</div>
+    </div>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
+    <span class="progress-text" id="progressText">0 / 56</span>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('articles')">Articles</button>
+  </div>
+
+  <!-- ARTICLES TAB -->
+  <div id="tab-articles">
+    <div class="section-label">Fulfillment & Account</div>
+    <div class="articles-list" id="group1"></div>
+    <div class="section-label">Setup & Packaging</div>
+    <div class="articles-list" id="group2"></div>
+    <div class="section-label">Billing & Payments</div>
+    <div class="articles-list" id="group3"></div>
+    <div class="section-label">Order Management</div>
+    <div class="articles-list" id="group4"></div>
+    <div class="section-label">Warehouses & Rules</div>
+    <div class="articles-list" id="group5"></div>
+    <div class="section-label">Processes</div>
+    <div class="articles-list" id="group6"></div>
+    <div class="section-label">Returns</div>
+    <div class="articles-list" id="group7"></div>
+    <div class="section-label">Reports</div>
+    <div class="articles-list" id="group8"></div>
+    <div class="section-label">Tools & Boards</div>
+    <div class="articles-list" id="group9"></div>
+  </div>
+
+
+
+
+</div>
+
+<script>
+const FORM_BASE = 'https://docs.google.com/forms/d/e/1FAIpQLSdYhk6f-_MkknLVCLi6ox8rfCDOibli01g_JVvjSyWkK9Ygzg/viewform?usp=publish-editor&entry.1719681073=';
+const SHEET_URL = 'https://docs.google.com/spreadsheets/d/17cttqqRYQmzjIhqkgwAHlHfFMA0Mp0kbl9Hae3HA8_M/edit?resourcekey=&gid=1370966339#gid=1370966339';
+
+const articles = [
+  {num:1,  title:"Zendesk - LVK Fulfillment Form",                 url:"https://shiphero.atlassian.net/wiki/spaces/SFKB/pages/4784947201/Zendesk+-+LVK+Fulfillment+Form",                         form:"01.+Zendesk+-+LVK+Fulfillment+Form",                  group:1},
+  {num:2,  title:"LVK Account Type Transitions",                   url:"https://shiphero.atlassian.net/wiki/spaces/SO/pages/4752539656/LVK+Account+Type+Transitions",                              form:"02.+LVK+Account+Type+Transitions",                    group:1},
+  {num:3,  title:"Hybrid Setup Guideline (From SaaS to Hybrid)",   url:"https://shiphero.atlassian.net/wiki/spaces/SO/pages/474480697/Hybrid+Setup+Guideline+From+SaaS+to+Hybrid",                form:"03.+Hybrid+Setup+Guideline+(From+SaaS+to+Hybrid)",    group:2},
+  {num:4,  title:"Hybrid Advantages & Challenges",                 url:"https://shiphero.atlassian.net/wiki/spaces/LL/pages/474677264/Hybrid+Advantages+Challenges",                              form:"04.+Hybrid+Advantages+%26+Challenges",                group:2},
+  {num:5,  title:"Geami Paper setup",                              url:"https://shiphero.atlassian.net/wiki/spaces/SO/pages/2630483999/Geami+Paper+setup",                                        form:"05.+Geami+Paper+setup",                               group:2},
+  {num:6,  title:"Bubble Wrap setup",                              url:"https://shiphero.atlassian.net/wiki/spaces/SO/pages/2510716931/Bubble+Wrap+setup",                                        form:"06.+Bubble+Wrap+setup",                               group:2},
+  {num:7,  title:"Sell Ahead setup",                               url:"https://shiphero.atlassian.net/wiki/spaces/SO/pages/2041806851/Sell+Ahead+setup",                                        form:"07.+Sell+Ahead+setup",                                group:2},
+  {num:8,  title:"Serial Number Tracking",                         url:"https://shiphero.atlassian.net/wiki/spaces/SO/pages/1793327113/Serial+Number+Tracking",                                  form:"08.+Serial+Number+Tracking",                         group:2},
+  {num:9,  title:"Lots & Expiration Tracking Set up",              url:"https://shiphero.atlassian.net/wiki/spaces/SO/pages/1488650241/Lots+Expiration+Tracking+Set+up",                         form:"09.+Lots+%26+Expiration+Tracking+Set+up",             group:2},
+  {num:10, title:"Printing Options: Invoices and Packing Slips",   url:"https://shiphero.atlassian.net/wiki/spaces/SO/pages/2551808023/Printing+Options+Invoices+and+Packing+Slips",             form:"10.+Printing+Options%3A+Invoices+and+Packing+Slips",  group:2},
+  {num:11, title:"Invoices & Packing Slips Customization",         url:"https://shiphero.atlassian.net/wiki/spaces/SO/pages/4972183555/Invoices+Packing+Slips+Customization",                    form:"11.+Invoices+%26+Packing+Slips+Customization",        group:2},
+  {num:12, title:"LVK Packaging options",                          url:"https://shiphero.atlassian.net/wiki/spaces/LL/pages/4592435204/LVK+Packaging+options",                                   form:"12.+LVK+Packaging+options",                          group:2},
+  {num:13, title:"Packaging Mapping",                              url:"https://shiphero.atlassian.net/wiki/spaces/SO/pages/4766531585/Packaging+Mapping",                                        form:"13.+Packaging+Mapping",                              group:2},
+  {num:14, title:"Marketing Material Mapping",                     url:"https://shiphero.atlassian.net/wiki/spaces/SO/pages/4974837761/Marketing+Material+Mapping",                              form:"14.+Marketing+Material+Mapping",                     group:2},
+  {num:15, title:"Custom Packaging SKUs & BOX Type Creation",      url:"https://shiphero.atlassian.net/wiki/spaces/SO/pages/4973953035/Custom+Packaging+SKUs+BOX+Type+Creation",                 form:"15.+Custom+Packaging+SKUs+%26+BOX+Type+Creation",    group:2},
+  {num:16, title:"Mapping Custom Packaging with Order Splitting",  url:"https://shiphero.atlassian.net/wiki/spaces/SO/pages/4982931460/Mapping+Custom+Packaging+with+Order+Splitting",           form:"16.+Mapping+Custom+Packaging+with+Order+Splitting",  group:2},
+  {num:17, title:"LVK Payment Methods & Terms",                    url:"https://shiphero.atlassian.net/wiki/spaces/LB/pages/5003411460/LVK+Payment+Methods+Terms",                              form:"17.+LVK+Payment+Methods+%26+Terms",                  group:3},
+  {num:18, title:"Billing: Lot & Exp",                             url:"https://shiphero.atlassian.net/wiki/spaces/LB/pages/4976836618/Billing+Lot+Exp",                                        form:"18.+Billing+%3A+Lot%26Exp",                          group:3},
+  {num:19, title:"How to Map an order to a Box",                   url:"https://shiphero.atlassian.net/wiki/spaces/SFKB/pages/5006786564/How+to+Map+an+order+to+a+Box",                         form:"19.+How+to+Map+an+order+to+a+Box",                   group:4},
+  {num:20, title:"How to Add and Remove SKUs from an order",       url:"https://shiphero.atlassian.net/wiki/spaces/SFKB/pages/5009113089/How+to+Add+and+Remove+Skus+from+an+order",             form:"20.+How+to+Add+and+Remove+Skus+from+an+order",       group:4},
+  {num:21, title:"How to Apply and Remove Tags from an order",     url:"https://shiphero.atlassian.net/wiki/spaces/SFKB/pages/5014847489/How+to+Apply+and+Remove+Tags+from+an+order",           form:"21.+How+to+Apply+and+Remove+Tags+from+an+order",     group:4},
+  {num:22, title:"LVK Warehouses",                                 url:"https://shiphero.atlassian.net/wiki/spaces/LL/pages/2218590209/LVK+Warehouses",                                         form:"22.+LVK+Warehouses",                                 group:5},
+  {num:23, title:"MWA Rules Set Up & Adjustments",                 url:"https://shiphero.atlassian.net/wiki/spaces/SO/pages/4983062529/MWA+Rules+Set+Up+Adjustments",                           form:"23.+MWA+Rules+Set+Up+%26+Adjustments",               group:5},
+  {num:24, title:"MWA - Multi Warehouse Allocation Rules",         url:"https://shiphero.atlassian.net/wiki/spaces/LL/pages/1287880755/MWA+-+Multi+Warehouse+Allocation+Rules",                 form:"24.+MWA+-+Multi+Warehouse+Allocation+Rules",         group:5},
+  {num:25, title:"AR - Automation Rules",                          url:"https://shiphero.atlassian.net/wiki/spaces/LL/pages/4988829697/AR+-+Automation+Rules",                                  form:"25.+AR+-+Automation+Rules",                          group:5},
+  {num:26, title:"Automation Rules Set Up & Adjustments",          url:"https://shiphero.atlassian.net/wiki/spaces/SO/pages/4988731405/Automation+Rules+Set+Up+Adjustments",                    form:"26.+Automation+Rules+Set+Up+%26+Adjustments",        group:5},
+  {num:27, title:"Warehouse Visits",                               url:"https://shiphero.atlassian.net/wiki/spaces/SFKB/pages/4764205076/Warehouse+Visits",                                     form:"27.+Warehouse+Visits",                               group:6, updated:true},
+  {num:28, title:"Cycle Count Request",                            url:"https://shiphero.atlassian.net/wiki/spaces/SFKB/pages/4535713793/Cycle+Count+Request",                                  form:"28.+Cycle+Count+Request",                            group:6, updated:true},
+  {num:29, title:"Credit Request",                                 url:"https://shiphero.atlassian.net/wiki/spaces/SFKB/pages/4763942918/Credit+Request",                                       form:"29.+Credit+Request",                                 group:6},
+  // Warehouses & Rules
+  {num:32, title:"Warehouse Expansion Request",                    url:"https://shiphero.atlassian.net/wiki/spaces/SFKB/pages/4498882573/Warehouse+Expansion+Request",                             form:"32.+Warehouse+Expansion+Request",                    group:5, updated:true},
+  {num:33, title:"How to Connect a Warehouse",                     url:"https://shiphero.atlassian.net/wiki/spaces/SO/pages/2208628757/How+to+Connect+a+Warehouse",                               form:"33.+How+to+Connect+a+Warehouse",                     group:5},
+  {num:54, title:"LVK - Amazon Shipping Carrier Integration",      url:"https://shiphero.atlassian.net/wiki/spaces/SO/pages/5285216280/LVK+-+Amazon+Shipping+Carrier+Integration",                form:"54.+LVK+-+Amazon+Shipping+Carrier+Integration",      group:5, updated:true},
+  // Billing & Payments
+  {num:39, title:"How LVK Finance Team Works",                     url:"https://shiphero.atlassian.net/wiki/spaces/LB/pages/5208178691/How+LVK+Finance+Team+Works",                               form:"39.+How+LVK+Finance+Team+Works",                     group:3},
+  {num:40, title:"Fees Glossary & Definitions",                    url:"https://shiphero.atlassian.net/wiki/spaces/LB/pages/5004918794/Fees+Glossary+Definitions",                               form:"40.+Fees+Glossary+%26+Definitions",                  group:3},
+  {num:51, title:"LVK - Accounts Receivable (AR)",                 url:"https://shiphero.atlassian.net/wiki/spaces/LB/pages/5277876236/LVK+-+Accounts+Receivable+AR",                            form:"51.+LVK+-+Accounts+Receivable+(AR)",                 group:3},
+  {num:52, title:"LVK Collection Process - Unpaid Accounts",       url:"https://shiphero.atlassian.net/wiki/spaces/LB/pages/5278334977/LVK+Collection+Process+-+Unpaid+Accounts",                form:"52.+LVK+Collection+Process+-+Unpaid+Accounts",       group:3},
+  {num:56, title:"2026 Additional Services Pricing Sheet - Shipper's Insurance", url:"https://shiphero.atlassian.net/wiki/spaces/LB/pages/1641578548/2026+Additional+Services+Pricing+Sheet",    form:"56.+2026+Additional+Services+Pricing+Sheet",        group:3},
+  // Processes
+  {num:34, title:"LVK Official Customers Comms Process",           url:"https://shiphero.atlassian.net/wiki/spaces/SFKB/pages/4781899778/LVK+Official+Customers+Comms+Process",                  form:"34.+LVK+Official+Customers+Comms+Process",           group:6, updated:true},
+  {num:35, title:"LVK POC Board",                                  url:"https://shiphero.atlassian.net/wiki/spaces/SFKB/pages/5173903364/LVK+POC+Board",                                         form:"35.+LVK+POC+Board",                                  group:6, updated:true},
+  {num:36, title:"CS Feature & Improvement Requests (FIR)",        url:"https://shiphero.atlassian.net/wiki/spaces/SFKB/pages/4751130626/CS+Feature+Improvement+Requests+FIR",                   form:"36.+CS+Feature+%26+Improvement+Requests+(FIR)",      group:6, updated:true},
+  {num:55, title:"LVK Post Mortem Process",                        url:"https://shiphero.atlassian.net/wiki/spaces/SFKB/pages/5292130339/LVK+Post+Mortem+Process",                               form:"55.+LVK+Post+Mortem+Process",                        group:6, updated:true},
+  // Returns
+  {num:30, title:"Returns Management & Lifecycle",                 url:"https://shiphero.atlassian.net/wiki/spaces/SFKB/pages/5150900251/Returns+Management+Lifecycle",                           form:"30.+Returns+Management+%26+Lifecycle",               group:7},
+  {num:31, title:"LVK Returns Configuration",                      url:"https://shiphero.atlassian.net/wiki/spaces/SFKB/pages/5151162369/LVK+Returns+Workflows",                                 form:"31.+LVK+Returns+Configuration",                      group:7},
+  {num:41, title:"How to Handle a Returns Enablement Request",     url:"https://shiphero.atlassian.net/wiki/spaces/SFKB/pages/5212635147/How+to+Handle+a+Returns+Enablement+Request",            form:"41.+How+to+Handle+a+Returns+Enablement+Request",     group:7, updated:true},
+  {num:42, title:"Returns Partnerships",                           url:"https://shiphero.atlassian.net/wiki/spaces/SFKB/pages/edit-v2/2513240090",                                               form:"42.+Returns+Partnerships",                           group:7},
+  {num:43, title:"AfterShip Returns",                              url:"https://shiphero.atlassian.net/wiki/spaces/SFKB/pages/5212438560/AfterShip+Returns",                                     form:"43.+AfterShip+Returns",                              group:7},
+  {num:44, title:"Loop Returns",                                   url:"https://shiphero.atlassian.net/wiki/spaces/SFKB/pages/5212209206/Loop+Returns+New",                                      form:"44.+Loop+Returns",                                   group:7},
+  {num:45, title:"ReturnGo Returns",                               url:"https://shiphero.atlassian.net/wiki/spaces/SFKB/pages/5212438572/ReturnGo+Returns",                                     form:"45.+ReturnGo+Returns",                               group:7},
+  {num:46, title:"Happy Returns",                                  url:"https://shiphero.atlassian.net/wiki/spaces/SFKB/pages/5213421613/Happy+Returns",                                         form:"46.+Happy+Returns",                                  group:7},
+  {num:53, title:"LVK Tools | Returns | User Guide",               url:"https://shiphero.atlassian.net/wiki/spaces/LTWT/pages/5223186433/LVK+Tools+Returns",                                    form:"53.+LVK+Tools+%7C+Returns+%7C+User+Guide",           group:7},
+  // Reports
+  {num:37, title:"LVK Platform Reports",                           url:"https://shiphero.atlassian.net/wiki/spaces/SFKB/pages/5185830922/LVK+Platform+Reports",                                 form:"37.+LVK+Platform+Reports",                           group:8},
+  {num:38, title:"Custom Report Request",                          url:"https://shiphero.atlassian.net/wiki/spaces/SFKB/pages/5184913421/Custom+Report+Request",                                 form:"38.+Custom+Report+Request",                          group:8, updated:true},
+  // Tools & Boards
+  {num:47, title:"LVK CS Monday Board Directory",                  url:"https://shiphero.atlassian.net/wiki/spaces/SFKB/pages/5275910155/LVK+CS+Monday+Board+Directory",                        form:"47.+LVK+CS+Monday+Board+Directory",                  group:9},
+  {num:48, title:"LVK Key Accounts Tracker",                       url:"https://shiphero.atlassian.net/wiki/spaces/SFKB/pages/5276041239/LVK+Key+Accounts+Tracker",                             form:"48.+LVK+Key+Accounts+Tracker",                       group:9},
+  {num:49, title:"CS Projects Board",                              url:"https://shiphero.atlassian.net/wiki/spaces/SFKB/pages/5275910145/CS+Projects+Board",                                    form:"49.+CS+Projects+Board",                              group:9},
+  {num:50, title:"LVK Onboarding Tracker",                         url:"https://shiphero.atlassian.net/wiki/spaces/SO/pages/4994957313/LVK+Onboarding+Tracker",                                 form:"50.+LVK+Onboarding+Tracker",                         group:9},
+];
+
+let readSet = new Set(JSON.parse(localStorage.getItem('lvk_read')||'[]'));
+
+function save() {
+  try { localStorage.setItem('lvk_read', JSON.stringify([...readSet])); } catch(e){}
+}
+
+function updateStats() {
+  const n = readSet.size;
+  document.getElementById('statRead').textContent = n;
+  document.getElementById('progressFill').style.width = Math.round(n/56*100)+'%';
+  document.getElementById('progressText').textContent = n+' / 56';
+}
+
+function askUrl(a) {
+  return FORM_BASE + a.form;
+}
+
+function renderArticles() {
+  for (let g=1; g<=9; g++) {
+    const el = document.getElementById('group'+g);
+    el.innerHTML = articles.filter(a=>a.group===g).map(a=>`
+      <div class="article-card${readSet.has(a.num)?' read':''}">
+        <button class="check-circle" onclick="toggleRead(${a.num})" title="Mark as read">
+          <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+            <path d="M1 4l3 3 5-6" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <span class="article-num">${String(a.num).padStart(2,'0')}</span>
+        <a href="${a.url}" target="_blank" class="article-title article-link" onclick="event.stopPropagation()">${a.title}</a>
+        ${a.updated ? '<span class="updated-pill">Updated</span>' : ''}
+        <a href="${askUrl(a)}" target="_blank" class="ask-btn" onclick="event.stopPropagation()">Ask ↗</a>
+      </div>
+    `).join('');
+  }
+}
+
+function toggleRead(num) {
+  if (readSet.has(num)) readSet.delete(num); else readSet.add(num);
+  save(); renderArticles(); updateStats();
+}
+
+function showTab(tab) {
+  document.querySelectorAll('.tab').forEach((el,i) => {
+    el.classList.toggle('active', i===0);
+  });
+}
+
+function openSheet() {
+  window.open(SHEET_URL, '_blank');
+}
+
+const d = new Date();
+document.getElementById('topbarDate').textContent = d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+
+renderArticles();
+updateStats();
+</script>
+</body>
+</html>
